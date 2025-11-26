@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Button} from "react-native";
 import React, {useState} from "react";
-import Canidate1 from "../assets/trump.jpg";
-import Canidate2 from "../assets/kamala.jpg";
+import Canidate1 from "./assets/trump.jpg";
+import Canidate2 from "./assets/kamala.jpg";
 
 
 export default function App() {
@@ -42,6 +42,11 @@ function Location(){
 function ElectorateContainer(){
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedCandidate, setSelectedCandidate] = useState(null);
+	const [voteNum, setVoteNum] = useState(0);
+
+	const addVote = () => {
+		setVoteNum(prev => prev + 1);
+	};
 
 	const canidates = [
 		{ id: 1, source: Canidate1, name: "Candidate 1", bio: "Bio for candidate 1" },
@@ -62,10 +67,11 @@ function ElectorateContainer(){
 		<>
 			<View style={styles.ElectorateContainer}>
 				<Text style={{padding: 10}}>Cast Your Vote for the Supreme Leader</Text>
+				<Text>{voteNum}</Text>
 				<View style={styles.ImageRow}>
 					{canidates.map(canidate => (
 						<TouchableOpacity key={canidate.id} onPress={() => openModal(canidate)}>
-							<Image source={canidate.source} style={canidate}></Image>
+							<Image source={canidate.source} style={styles.CanidateImage}></Image>
 						</TouchableOpacity>
 					) )}
 				</View>
@@ -83,6 +89,7 @@ function ElectorateContainer(){
 									<Button title="Close" onPress={closeModal}></Button>
 									<Text>{selectedCandidate.name}</Text>
 									<Text>{selectedCandidate.bio}</Text>
+									<Button title="Vote" onPress={addVote}></Button>
 								</>
 							)
 						}
@@ -142,6 +149,8 @@ const styles = StyleSheet.create({
 	},
 
 	CanidateImage:{
+		height: 100,
+		width: 100,
 		margin: 10,
 		borderWidth: 2,
 		borderColor: "#000"
@@ -155,7 +164,6 @@ const styles = StyleSheet.create({
 	},
 
 	modalContent:{
-		width: 300,
 		padding: 20,
 		backgroundColor: "white",
 		borderRadius: 8
