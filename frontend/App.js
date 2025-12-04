@@ -1,9 +1,9 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Button} from "react-native";
-import React, {useState} from "react";
-import Canidate1 from "./assets/trump.jpg";
-import Canidate2 from "./assets/kamala.jpg";
 
+import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Button} from "react-native";
+import {useEffect, useState} from "react";
+import axios from "axios";
+
+const STRAPI_URL = "http://localhost:1337";
 
 export default function App() {
 	return (
@@ -16,8 +16,6 @@ export default function App() {
 				<Location/>
 				<ElectorateContainer/>
 			</View>
-
-			<StatusBar style="auto" />
 		</View>
 	);
 }
@@ -43,15 +41,11 @@ function ElectorateContainer(){
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedCandidate, setSelectedCandidate] = useState(null);
 	const [voteNum, setVoteNum] = useState(0);
+	const [canidates, setCanidates] = useState([]);
 
 	const addVote = () => {
 		setVoteNum(prev => prev + 1);
 	};
-
-	const canidates = [
-		{ id: 1, source: Canidate1, name: "Candidate 1", bio: "Bio for candidate 1" },
-		{ id: 2, source: Canidate2, name: "Candidate 2", bio: "Bio for candidate 2" }
-	];
 
 	const openModal = (canidate) => {
 		setSelectedCandidate(canidate);
@@ -63,7 +57,26 @@ function ElectorateContainer(){
 		setSelectedCandidate(null);
 	};
 
-	return (
+	useEffect(() => {
+		async function fetchCanidates() {
+			try{
+				const resp = await axios.get(`${STRAPI_URL}/api/canidates`);
+
+				const fetched = resp.data.data.map(item => ({
+          		id: item.id,
+          		...item.attributes,
+        		}));
+				setCanidates(fetched);
+			}catch(error){
+				console.error("Failed to Fetch Canidates", error);
+			}
+		}
+		fetchCanidates();
+	}, 
+	[]
+	);
+
+	return(
 		<>
 			<View style={styles.ElectorateContainer}>
 				<Text style={{padding: 10}}>Cast Your Vote for the Supreme Leader</Text>
@@ -71,7 +84,7 @@ function ElectorateContainer(){
 				<View style={styles.ImageRow}>
 					{canidates.map(canidate => (
 						<TouchableOpacity key={canidate.id} onPress={() => openModal(canidate)}>
-							<Image source={canidate.source} style={styles.CanidateImage}></Image>
+							<Image source={canidate.Image} style={styles.CanidateImage}></Image>
 						</TouchableOpacity>
 					) )}
 				</View>

@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "canidates",
+  "info": {
+    "singularName": "canidate",
+    "pluralName": "canidates",
+    "displayName": "Canidate"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Name": {
+      "type": "string"
+    },
+    "Description": {
+      "type": "text"
+    },
+    "Party": {
+      "type": "string"
+    },
+    "StillRunning": {
+      "type": "boolean"
+    },
+    "Portrait": {
+      "type": "media",
+      "multiple": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "NumOfVotes": {
+      "type": "integer"
+    }
+  }
+}
