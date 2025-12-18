@@ -60,13 +60,26 @@ function ElectorateContainer(){
 	useEffect(() => {
 		async function fetchCanidates() {
 			try{
-				const resp = await axios.get(`${STRAPI_URL}/api/canidates`);
+				const resp = await axios.get(`${STRAPI_URL}/api/canidates?populate=Portrait`);
 
-				const fetched = resp.data.data.map(item => ({
-          		id: item.id,
-          		...item.attributes,
-        		}));
-				setCanidates(fetched);
+				const canidatesData = resp.data.data.map(canidate => {
+
+					const attributes = canidate?.attributes;
+
+					const rawUrl = attributes?.Portrait?.data.attributes.url;
+
+					const imageUrl = `${STRAPI_URL}${rawUrl}`;
+
+					return {
+						id: canidate.id,
+						name: attributes.Name,
+						bio: canidate.attributes.bio,
+						Image: {uri: imageUrl}
+					};
+				});
+
+				setCanidates(canidatesData);
+
 			}catch(error){
 				console.error("Failed to Fetch Canidates", error);
 			}
