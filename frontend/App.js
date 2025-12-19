@@ -2,8 +2,8 @@
 import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Button} from "react-native";
 import {useEffect, useState} from "react";
 import axios from "axios";
-
-const STRAPI_URL = "http://localhost:1337";
+import placeholder from "./assets/placeholder.png";
+import { STRAPI_URL } from "./config";
 
 export default function App() {
 	return (
@@ -68,18 +68,17 @@ function ElectorateContainer(){
 
 					const rawUrl = attributes?.Portrait?.data.attributes.url;
 
-					const imageUrl = `${STRAPI_URL}${rawUrl}`;
+					const imageUrl = rawUrl ? `${STRAPI_URL}${rawUrl}` : placeholder;
 
 					return {
 						id: canidate.id,
-						name: attributes.Name,
-						bio: canidate.attributes.bio,
-						Image: {uri: imageUrl}
+						name: canidate.Name,
+						party: canidate.Party,
+						bio: canidate.Description,
+						Image: imageUrl
 					};
 				});
-
 				setCanidates(canidatesData);
-
 			}catch(error){
 				console.error("Failed to Fetch Canidates", error);
 			}
@@ -113,8 +112,9 @@ function ElectorateContainer(){
 							selectedCandidate && (
 								<>
 									<Button title="Close" onPress={closeModal}></Button>
-									<Text>{selectedCandidate.name}</Text>
-									<Text>{selectedCandidate.bio}</Text>
+									<Text style = {{padding: 10}}>{selectedCandidate.name}</Text>
+									<Text style = {{padding: 10}}>{selectedCandidate.party}</Text>
+									<Text style = {{padding: 10}}>{selectedCandidate.bio}</Text>
 									<Button title="Vote" onPress={addVote}></Button>
 								</>
 							)
