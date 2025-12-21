@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Button} from "r
 import {useEffect, useState} from "react";
 import axios from "axios";
 import placeholder from "./assets/placeholder.png";
+import titleImage from "./assets/EZVote_Title-removebg.png";
 import { STRAPI_URL } from "./config";
 
 export default function App() {
@@ -11,7 +12,6 @@ export default function App() {
 			<View style={styles.NavBar}>
 				<NavBar />
 			</View>
-
 			<View style={styles.content}>
 				<Location/>
 				<ElectorateContainer/>
@@ -23,7 +23,7 @@ export default function App() {
 function NavBar(){
 	return (
 		<View style={styles.NavBar}>
-			<Text>EZVote</Text>
+			<Image source={titleImage} style={{width: 200, height:75}}></Image>
 		</View>
 	);
 }
@@ -66,17 +66,23 @@ function ElectorateContainer(){
 				const canidatesData = resp.data.data.map(canidate => {
 
 					const relativeUrl = canidate.Portrait?.url;
+
+					// 1. Determine the source (absolute URL vs placeholder)
+                	let finalImage = placeholder;
+                	if (relativeUrl) {
+                    	// Clean STRAPI_URL to ensure it doesn't have a trailing slash
+                    	const base = STRAPI_URL.replace(/\/$/, ""); 
+                    	finalImage = `${base}${relativeUrl}`;
+                	}
 					
 					return {
 						id: canidate.id,
 						name: canidate.Name,
 						party: canidate.Party,
 						bio: canidate.Description,
-						Image: relativeUrl ? `${relativeUrl}` : placeholder
+						Image: finalImage
 					};
 				});
-
-				console.log("Raw API Response:", resp.data.data[0]);
 
 				setCanidates(canidatesData);
 			}catch(error){
@@ -96,7 +102,7 @@ function ElectorateContainer(){
 				<View style={styles.ImageRow}>
 					{canidates.map(canidate => (
 						<TouchableOpacity key={canidate.id} onPress={() => openModal(canidate)}>
-							<Image source={canidate.Image} style={styles.CanidateImage}></Image>
+							<Image source={{uri: canidate.Image}} style={styles.CanidateImage}></Image>
 						</TouchableOpacity>
 					) )}
 				</View>
@@ -111,7 +117,9 @@ function ElectorateContainer(){
 						{
 							selectedCandidate && (
 								<>
-									<Button title="Close" onPress={closeModal}></Button>
+									<View style= {{ flexDirection: "row", justifyContent: "flex-start" }}>
+										<Button title="Close" onPress={closeModal}></Button>
+									</View>
 									<Text style = {{padding: 10}}>{selectedCandidate.name}</Text>
 									<Text style = {{padding: 10}}>{selectedCandidate.party}</Text>
 									<Text style = {{padding: 10}}>{selectedCandidate.bio}</Text>
@@ -139,7 +147,7 @@ const styles = StyleSheet.create({
 		display: "flex",
 		alignItems: "center",
 		justifyContent: "flex-end",
-		paddingBottom: 10,
+		
 	},
 
 	content:{
@@ -150,22 +158,28 @@ const styles = StyleSheet.create({
 	Location:{
 		padding: 20,
 		borderWidth: 1,
+		borderRightWidth:0,
+		borderLeftWidth:0,
 		borderColor: "#000",
 		width: "100%",
 		alignItems: "center",
 		alignContent: "center",
 		alignSelf: "stretch",
+		borderBottomWidth:0
 	},
 
 	ElectorateContainer:{
-		marginTop: 5,
 		padding: 20,
-		borderWidth: 1,
+		borderWidth: 2,
+		borderRightWidth:0,
+		borderLeftWidth:0,
 		borderColor: "#000",
 		width: "100%",
 		alignItems: "center",
 		alignContent: "center",
 		scrollable: true,
+		borderTopWidth:1,
+		borderBottomWidth:1
 	},
 
 	ImageRow:{
@@ -179,6 +193,7 @@ const styles = StyleSheet.create({
 		width: 100,
 		margin: 10,
 		borderWidth: 2,
+		borderRadius: 10,
 		borderColor: "#000"
 	},
 
