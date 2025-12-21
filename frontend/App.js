@@ -42,6 +42,7 @@ function ElectorateContainer(){
 	const [selectedCandidate, setSelectedCandidate] = useState(null);
 	const [voteNum, setVoteNum] = useState(0);
 	const [canidates, setCanidates] = useState([]);
+	const [totalVoteNum] = useState(0);
 
 	const addVote = () => {
 		setVoteNum(prev => prev + 1);
@@ -64,20 +65,19 @@ function ElectorateContainer(){
 
 				const canidatesData = resp.data.data.map(canidate => {
 
-					const attributes = canidate?.attributes;
-
-					const rawUrl = attributes?.Portrait?.data.attributes.url;
-
-					const imageUrl = rawUrl ? `${STRAPI_URL}${rawUrl}` : placeholder;
-
+					const relativeUrl = canidate.Portrait?.url;
+					
 					return {
 						id: canidate.id,
 						name: canidate.Name,
 						party: canidate.Party,
 						bio: canidate.Description,
-						Image: imageUrl
+						Image: relativeUrl ? `${relativeUrl}` : placeholder
 					};
 				});
+
+				console.log("Raw API Response:", resp.data.data[0]);
+
 				setCanidates(canidatesData);
 			}catch(error){
 				console.error("Failed to Fetch Canidates", error);
@@ -92,7 +92,7 @@ function ElectorateContainer(){
 		<>
 			<View style={styles.ElectorateContainer}>
 				<Text style={{padding: 10}}>Cast Your Vote for the Supreme Leader</Text>
-				<Text>{voteNum}</Text>
+				<Text>{voteNum} / {totalVoteNum}</Text>
 				<View style={styles.ImageRow}>
 					{canidates.map(canidate => (
 						<TouchableOpacity key={canidate.id} onPress={() => openModal(canidate)}>
