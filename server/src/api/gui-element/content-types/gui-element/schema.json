@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "gui_elements",
+  "info": {
+    "singularName": "gui-element",
+    "pluralName": "gui-elements",
+    "displayName": "GUI Element"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "Location": {
+      "type": "string"
+    },
+    "MaxVoteCount": {
+      "type": "integer"
+    },
+    "Description": {
+      "type": "string"
+    },
+    "PollEnd": {
+      "type": "datetime"
+    }
+  }
+}

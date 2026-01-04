@@ -10,10 +10,10 @@ export default function App() {
 	return (
 		<View style={styles.container}>
 			<View style={styles.NavBar}>
-				<NavBar />
+				<NavBar/>
 			</View>
 			<View style={styles.content}>
-				<Location/>
+				<Design/>
 				<ElectorateContainer/>
 			</View>
 		</View>
@@ -28,11 +28,45 @@ function NavBar(){
 	);
 }
 
-function Location(){
+function Design(){
+
+	const [design, setGUIElements] = useState(null);
+
+	useEffect(() => {
+		async function fetchGUIElements() {
+			try{
+				const resp =  await axios.get(`${STRAPI_URL}/api/gui-elements?populate=*`);
+
+				const guiElements = resp.data.data.map(items => ({
+					location: items.Location,
+					description: items.Description,
+					maxVoteCount: items.MaxVoteCount,
+					pollEnd: items.PollEnd
+				}));
+				setGUIElements(guiElements[0]);
+			}catch(error){
+				console.error("Failed to Fetch GUI Elements", error);
+			}
+		}
+		fetchGUIElements();
+	},
+	[]
+	);
+
+	if (!design){
+		return(
+			<View style={styles.Location}>
+				<Text>Loading...</Text>
+			</View>
+		);
+	}
+
 	return (
 		<View style={styles.Location}>
 			<Text>Location</Text>
-			<Text>Winamac, IN</Text>
+			<Text style={{padding: 10}}>{design.location}</Text>
+			<Text>Description</Text>
+			<Text style={{padding: 10}}>{design.description}</Text>
 		</View>
 	);
 }
@@ -40,9 +74,8 @@ function Location(){
 function ElectorateContainer(){
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedCandidate, setSelectedCandidate] = useState(null);
-	const [voteNum, setVoteNum] = useState(0);
 	const [canidates, setCanidates] = useState([]);
-	const [totalVoteNum] = useState(0);
+	const [setVoteNum] = useState(0);
 
 	const addVote = () => {
 		setVoteNum(prev => prev + 1);
@@ -97,8 +130,6 @@ function ElectorateContainer(){
 	return(
 		<>
 			<View style={styles.ElectorateContainer}>
-				<Text style={{padding: 10}}>Cast Your Vote for the Supreme Leader</Text>
-				<Text>{voteNum} / {totalVoteNum}</Text>
 				<View style={styles.ImageRow}>
 					{canidates.map(canidate => (
 						<TouchableOpacity key={canidate.id} onPress={() => openModal(canidate)}>

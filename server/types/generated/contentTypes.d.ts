@@ -463,6 +463,64 @@ export interface ApiCanidateCanidate extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGuiElementGuiElement extends Struct.CollectionTypeSchema {
+  collectionName: 'gui_elements';
+  info: {
+    displayName: 'GUI Element';
+    pluralName: 'gui-elements';
+    singularName: 'gui-element';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    Description: Schema.Attribute.String;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gui-element.gui-element'
+    > &
+      Schema.Attribute.Private;
+    Location: Schema.Attribute.String;
+    MaxVoteCount: Schema.Attribute.Integer;
+    PollEnd: Schema.Attribute.DateTime;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiMaxVoteCountMaxVoteCount extends Struct.SingleTypeSchema {
+  collectionName: 'max_vote_counts';
+  info: {
+    displayName: 'MaxVoteCount';
+    pluralName: 'max-vote-counts';
+    singularName: 'max-vote-count';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::max-vote-count.max-vote-count'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface PluginContentReleasesRelease
   extends Struct.CollectionTypeSchema {
   collectionName: 'strapi_releases';
@@ -974,6 +1032,8 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::canidate.canidate': ApiCanidateCanidate;
+      'api::gui-element.gui-element': ApiGuiElementGuiElement;
+      'api::max-vote-count.max-vote-count': ApiMaxVoteCountMaxVoteCount;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

@@ -1,0 +1,14 @@
+{
+  "kind": "singleType",
+  "collectionName": "max_vote_counts",
+  "info": {
+    "singularName": "max-vote-count",
+    "pluralName": "max-vote-counts",
+    "displayName": "MaxVoteCount"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {}
+}
